@@ -6,35 +6,37 @@
     <title>Ishola Akande | Cloud Engineer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            margin: 0; padding: 0;
+        html, body {
+            margin: 0; 
+            padding: 0;
             background-color: #0a0c10;
             font-family: 'Inter', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
             color: white;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Disables all scrolling */
         }
 
         main { 
             text-align: center; 
-            z-index: 20; 
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center; 
+            height: 100vh; 
+            width: 100%;
+            transform: scale(1.5);
+            transform-origin: center;
         }
 
         /* 1. THE BIG "IA" BACKGROUND */
         .hero-container {
             position: relative;
             width: 100%;
-            height: 300px; /* Define a set height for the IA */
+            height: 300px; 
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 0px; /* Space between IA and your name */
         }
 
         .video-mask-container {
@@ -55,7 +57,7 @@
             filter: brightness(1.3);
         }
 
-        /* 2. YOUR NAME (Sitting naturally below the IA) */
+        /* 2. YOUR NAME */
         .full-name {
             font-size: 3.5rem; 
             font-weight: 700;
@@ -95,23 +97,26 @@
         }
 
         .tag:hover {
-                color: #fff;
-                border-color: #bb9f03;
-                background: rgba(187, 159, 3, 1);
-                box-shadow: 0 0 15px rgba(187, 159, 3, 0.4);
-                transform: translateY(-2px);
+            color: #fff;
+            border-color: #bb9f03;
+            background: rgba(187, 159, 3, 1);
+            box-shadow: 0 0 15px rgba(187, 159, 3, 0.4);
+            transform: translateY(-2px);
         }
 
+        #counter-text {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
-    <div class="cursor-glow" id="cursor-glow"></div>
-
     <main>
         <div class="hero-container">
             <div class="video-mask-container">
-                <video autoplay muted playsinline class="cloud-video">
-                    <source src="small_clouds.mp4" type="video/mp4">
+                <video autoplay muted playsinline loop class="cloud-video">
+                    <source src="small_clouds2.mp4" type="video/mp4">
                 </video>
             </div>
         </div>
@@ -121,28 +126,29 @@
         <p>Cloud Engineer | London, UK</p>
 
         <div class="tag-container">
-            <span class="tag">AWS S3</span>
-            <span class="tag">EC2 (Linux)</span>
-            <span class="tag">IAM Security</span>
-            <span class="tag">HTML5/CSS3</span>
+            <span class="tag">Home</span>
+            <span class="tag">Projects</span>
+            <span class="tag">Skills & Certifications</span>
+            <span class="tag">Experience</span>
+            <span class="tag">About me</span>
         </div>
-    </main>
 
+        <p id="counter-text">This page has been viewed <span id="counter" style="color: #bb9f03; font-weight: bold;">loading...</span> times.</p>
+    </main> 
+    
     <script>
-        const glow = document.getElementById('cursor-glow');
-        window.addEventListener('mousemove', (e) => {
-            glow.style.left = e.clientX + 'px';
-            glow.style.top = e.clientY + 'px';
-        });
+        // VISITOR COUNTER LOGIC
+        async function updateCounter() {
+            try {
+                let response = await fetch('https://a5rtlq2m6442nhctyd5yc4lzbm0kaxbg.lambda-url.eu-west-2.on.aws/');
+                let data = await response.json();
+                document.getElementById('counter').innerText = data.views;
+            } catch (error) {
+                console.error('Error fetching counter:', error);
+                document.getElementById('counter').innerText = "error";
+            }
+        }
+        updateCounter();
     </script>
-    <script>
-    const myVideo = document.querySelector('.cloud-video');
-
-    // This listens for the REAL end of the video file
-    myVideo.addEventListener('ended', function() {
-        this.currentTime = 0; // Reset to the beginning
-        this.play();          // Start playing again
-    }, false);
-</script>
 </body>
 </html>
