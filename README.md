@@ -7,7 +7,7 @@ A full-stack, serverless resume website built on AWS, featuring a live visitor c
 
 ## 🏗️ Architecture Overview
 
-![Image](https://github.com/user-attachments/assets/2bbe27c6-1453-4557-977d-e8c001161613)
+![Image](https://github.com/user-attachments/assets/5ccbe64c-7f6a-467b-b361-7ccea4c992ba)
 
 The project is hosted entirely on AWS using a serverless approach to ensure high availability, scalability, and cost-efficiency.
 
