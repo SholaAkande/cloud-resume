@@ -41,3 +41,7 @@ I implemented a CI/CD pipeline using **GitHub Actions**. Every time I push code 
 ## 🧑‍💻 Author
 **Ishola Akande**
 *Cloud Engineer in Training*
+
+
+---
+**Note:** For a detailed log of all technical challenges and solutions encountered during this build, see [troubleshooting.md](./troubleshooting.md).
