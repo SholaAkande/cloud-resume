@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ishola Akande | Cloud Engineer</title>
+    <title>Ishola Akande | AWS Cloud Engineer</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         html, body {
@@ -150,9 +150,10 @@
     
     <script>
         // VISITOR COUNTER LOGIC
+        const counterUrl = "https://3rs9c72wzl.execute-api.eu-west-2.amazonaws.com/get-views"
         async function updateCounter() {
             try {
-                let response = await fetch('https://a5rtlq2m6442nhctyd5yc4lzbm0kaxbg.lambda-url.eu-west-2.on.aws/');
+                let response = await fetch(counterUrl);
                 let data = await response.json();
                 document.getElementById('counter').innerText = data.views;
             } catch (error) {

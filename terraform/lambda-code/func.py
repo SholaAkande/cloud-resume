@@ -3,8 +3,7 @@ import boto3
 
 # Initialize the DynamoDB client
 dynamodb = boto3.resource('dynamodb')
-table = dynamodb.Table('cloud-resume-stats')
-
+table = dynamodb.Table("shola-cloud-resume-stats-2026")
 def lambda_handler(event, context):
     # 1. Update the 'views' count for our item with id '1'
     response = table.update_item(
