@@ -86,7 +86,7 @@ resource "aws_apigatewayv2_api" "lambda_api" {
   name          = "vistor-counter-api"
   protocol_type = "HTTP"
   cors_configuration {
-    allow_origins = ["*"] # This allows your website to talk to the API from anywhere
+    allow_origins = ["*"] # This allows the website to talk to the API from anywhere
     allow_methods = ["GET", "POST"]
   }
 }
@@ -121,7 +121,84 @@ resource "aws_lambda_permission" "api_gw" {
   source_arn    = "${aws_apigatewayv2_api.lambda_api.execution_arn}/*/*"
 }
 
-# 6. Output the URL so we can find it easily
+# 6. Output the URL so I can find it easily
 output "base_url" {
   value = aws_apigatewayv2_stage.lambda_stage.invoke_url
+}
+
+# 1. The Website S3 Bucket
+resource "aws_s3_bucket" "website_bucket" {
+  bucket = "shola-cloud-resume-2026-site" # Must be unique!
+}
+
+# 2. CloudFront Origin Access Control (The Security Guard)
+resource "aws_cloudfront_origin_access_control" "default" {
+  name                              = "s3-oac"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+# 3. The CloudFront Distribution
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  origin {
+    domain_name              = aws_s3_bucket.website_bucket.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.default.id
+    origin_id                = "S3Origin"
+  }
+
+  enabled             = true
+  default_root_object = "index.html"
+
+  default_cache_behavior {
+    allowed_methods  = ["GET", "HEAD"]
+    cached_methods   = ["GET", "HEAD"]
+    target_origin_id = "S3Origin"
+
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
+}
+
+# Output the CloudFront URL so it can be found
+output "cloudfront_url" {
+  value = aws_cloudfront_distribution.s3_distribution.domain_name
+}
+
+resource "aws_s3_bucket_policy" "cdn_oac_policy" {
+  bucket = aws_s3_bucket.website_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action   = "s3:GetObject"
+        Effect   = "Allow"
+        Resource = "${aws_s3_bucket.website_bucket.arn}/*"
+        Principal = {
+          Service = "cloudfront.amazonaws.com"
+        }
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.s3_distribution.arn
+          }
+        }
+      }
+    ]
+  })
 }
