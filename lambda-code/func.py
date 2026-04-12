@@ -1,0 +1,28 @@
+import json
+import boto3
+
+# Initialize the DynamoDB client
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table("shola-cloud-resume-stats-2026")
+def lambda_handler(event, context):
+    # 1. Update the 'views' count for our item with id '1'
+    response = table.update_item(
+        Key={'id': '1'},
+        UpdateExpression='SET #v = #v + :val',
+        ExpressionAttributeNames={'#v': 'views'},
+        ExpressionAttributeValues={':val': 1},
+        ReturnValues="UPDATED_NEW"
+    )
+    
+    # 2. Get the new count from the response
+    views = response['Attributes']['views']
+    
+    # 3. Return the count to the website
+    return {
+        'statusCode': 200,
+        'headers': {
+            'Access-Control-Allow-Origin': '*', 
+            'Access-Control-Allow-Methods': 'GET'
+        },
+        'body': json.dumps({'views': int(views)})
+    }
