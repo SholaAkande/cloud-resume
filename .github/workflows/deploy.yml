@@ -20,7 +20,9 @@ jobs:
           aws-region: eu-west-2 # London region
 
       - name: Deploy to S3
-        run: aws s3 sync . s3://my-future-cloud-resume-2026 --delete --exclude ".github/*" --exclude ".git/*"
+        run: aws s3 sync . s3://shola-cloud-resume-2026-site --exclude "terraform/*" --exclude ".github/*" --exclude ".git/*"
 
       - name: Create CloudFront Invalidation
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+        
